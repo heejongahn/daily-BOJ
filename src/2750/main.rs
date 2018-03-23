@@ -11,40 +11,39 @@ fn expect_i32() -> i32 {
     return buf.trim_right().parse().expect("Failed to expect i_32");
 }
 
-fn quick_sort(v: &Vec<i32>) -> Vec<i32> {
+fn quick_sort(v: &mut [i32]) {
     let len = v.len();
+    if len >= 2 {
+        let pivot_index = partition(v);
+        quick_sort(&mut v[0..pivot_index]);
+        quick_sort(&mut v[pivot_index + 1..len]);
+    }
+}
 
-    match len {
-        0 => vec![],
-        1 => vec![v[0]],
-        _ => {
-            let pivot = v[0];
-            let mut less = Vec::new();
-            let mut greater = Vec::new();
+fn partition(v: &mut [i32]) -> usize {
+    let len = v.len();
+    let pivot_index = len / 2;
 
-            for i in 1..len {
-                let item = v[i];
-                if pivot <= item {
-                    greater.push(item);
-                } else {
-                    less.push(item);
-                }
-            }
+    v.swap(pivot_index, len - 1);
 
-            let mut sorted = quick_sort(&less);
-            sorted.push(pivot);
-            sorted.extend(&quick_sort(&greater));
-            return sorted
+    let mut store_index = 0;
+    for i in 0..len - 1 {
+        if (&v[i] < &v[len - 1]) {
+            v.swap(i, store_index);
+            store_index += 1;
         }
     }
+
+    v.swap(store_index, len - 1);
+    store_index
 }
 
 fn main() {
     let count = expect_i32();
-    let numbers: Vec<_> = (0..count).map(|_| { expect_i32() }).collect();
+    let mut numbers: Vec<_> = (0..count).map(|_| { expect_i32() }).collect();
 
-    let sorted = quick_sort(&numbers);
-    for number in sorted.iter() {
+    quick_sort(&mut numbers);
+    for number in numbers.iter() {
         println!("{}", number);
     }
 }

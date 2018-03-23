@@ -1,4 +1,15 @@
 use std::io;
+use std::io::BufRead;
+
+fn expect_i32() -> i32 {
+    let stdin = io::stdin();
+    let mut handle = stdin.lock();
+    let mut buf = String::new();
+
+    handle.read_line(&mut buf);
+
+    return buf.trim_right().parse().expect("Failed to expect i_32");
+}
 
 fn quick_sort(v: &Vec<i32>) -> Vec<i32> {
     let len = v.len();
@@ -31,16 +42,11 @@ fn quick_sort(v: &Vec<i32>) -> Vec<i32> {
 fn main() {
     let mut numbers: Vec<i32> = Vec::new();
 
-    let mut count = String::new();
-    io::stdin().read_line(&mut count).expect("Failed to read line");
-
-    let count = count.trim_right().parse().expect("Failed to parse count");
+    let count = expect_i32();
 
     for _ in 0..count {
-        let mut number = String::new();
-        io::stdin().read_line(&mut number).expect("Failed to read line");
-
-        numbers.push(number.trim_right().parse().expect("Failed to parse interger line"));
+        let number = expect_i32();
+        numbers.push(number);
     }
 
     let sorted = quick_sort(&numbers);

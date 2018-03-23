@@ -40,9 +40,8 @@ fn quick_sort(v: &Vec<i32>) -> Vec<i32> {
 }
 
 fn main() {
-    let mut numbers: Vec<i32> = Vec::new();
-
     let count = expect_i32();
+    let mut numbers = Vec::<i32>::with_capacity(count);
 
     for _ in 0..count {
         let number = expect_i32();

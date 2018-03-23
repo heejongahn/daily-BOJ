@@ -1,5 +1,4 @@
 use std::io;
-use std::str;
 
 fn quick_sort(v: &Vec<i32>) -> Vec<i32> {
     let len = v.len();
@@ -35,16 +34,13 @@ fn main() {
     let mut count = String::new();
     io::stdin().read_line(&mut count).expect("Failed to read line");
 
-    let count = str::parse::<i32>(count.trim()).expect("Failed to parse count");
+    let count = count.trim_right().parse().expect("Failed to parse count");
 
     for _ in 0..count {
         let mut number = String::new();
         io::stdin().read_line(&mut number).expect("Failed to read line");
 
-        match str::parse::<i32>(number.trim()) {
-            Ok(n) => { numbers.push(n) }
-            _ => {}
-        }
+        numbers.push(number.trim_right().parse().expect("Failed to parse interger line"));
     }
 
     let sorted = quick_sort(&numbers);

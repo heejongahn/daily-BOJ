@@ -1,16 +1,6 @@
 use std::io;
 use std::io::BufRead;
 
-fn expect_i32() -> i32 {
-    let stdin = io::stdin();
-    let mut handle = stdin.lock();
-    let mut buf = String::new();
-
-    handle.read_line(&mut buf);
-
-    return buf.trim_right().parse().expect("Failed to expect i_32");
-}
-
 fn merge_sort(v: &[i32]) -> Vec<i32> {
     let len = v.len();
     if len < 2 {
@@ -62,6 +52,14 @@ fn merge(left: &[i32], right: &[i32]) -> Vec<i32> {
 }
 
 fn main() {
+    let stdin = io::stdin();
+    let mut handle = stdin.lock();
+    let mut expect_i32 = || {
+        let mut buffer = String::new();
+        handle.read_line(&mut buffer).unwrap();
+        buffer.trim_right().parse().expect("Failed to expect i_32")
+    };
+
     let count = expect_i32();
     let numbers: Vec<_> = (0..count).map(|_| { expect_i32() }).collect();
 

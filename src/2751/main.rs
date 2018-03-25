@@ -24,21 +24,7 @@ fn merge(left: &[i32], right: &[i32]) -> Vec<i32> {
 
     let mut sorted = Vec::with_capacity(left_len + right_len);
 
-    while (left_idx < left_len) || (right_idx < right_len) {
-        // Only right elems are left
-        if left_idx == left_len {
-            sorted.push(right[right_idx]);
-            right_idx += 1;
-            continue;
-        }
-
-        // Only left elems are left
-        if right_idx == right_len {
-            sorted.push(left[left_idx]);
-            left_idx += 1;
-            continue;
-        }
-
+    while (left_idx < left_len) && (right_idx < right_len) {
         if left[left_idx] < right[right_idx] {
             sorted.push(left[left_idx]);
             left_idx += 1;
@@ -46,6 +32,12 @@ fn merge(left: &[i32], right: &[i32]) -> Vec<i32> {
             sorted.push(right[right_idx]);
             right_idx += 1;
         }
+    }
+
+    if left_idx == left_len {
+        sorted.extend_from_slice(&right[right_idx..right_len]);
+    } else {
+        sorted.extend_from_slice(&left[left_idx..left_len]);
     }
 
     return sorted;
@@ -57,7 +49,7 @@ fn main() {
     let mut expect_i32 = || {
         let mut buffer = String::new();
         handle.read_line(&mut buffer).unwrap();
-        buffer.trim_right().parse().expect("Failed to expect i_32")
+        buffer[0..(buffer.len() - 1)].parse().expect("Failed to expect i_32")
     };
 
     let count = expect_i32();

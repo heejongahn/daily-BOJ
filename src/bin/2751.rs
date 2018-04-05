@@ -1,5 +1,5 @@
 use std::io;
-use std::io::BufRead;
+use std::io::{Read, BufRead};
 
 fn merge_sort(v: &[i32]) -> Vec<i32> {
     let len = v.len();
@@ -46,14 +46,17 @@ fn merge(left: &[i32], right: &[i32]) -> Vec<i32> {
 fn main() {
     let stdin = io::stdin();
     let mut handle = stdin.lock();
-    let mut expect_i32 = || {
+    let mut expect_i32 = || -> i32 {
         let mut buffer = String::new();
         handle.read_line(&mut buffer).unwrap();
         buffer[0..(buffer.len() - 1)].parse().expect("Failed to expect i_32")
     };
 
-    let count = expect_i32();
-    let numbers: Vec<_> = (0..count).map(|_| { expect_i32() }).collect();
+    expect_i32();
+
+    let mut buf = String::new();
+    io::stdin().read_to_string(&mut buf).expect("read_to_string failed");
+    let numbers: Vec<i32> = buf.lines().map(|s| s.parse().expect("i32 parse failed")).collect();
 
     let sorted = merge_sort(&numbers[..]);
     for number in sorted.iter() {

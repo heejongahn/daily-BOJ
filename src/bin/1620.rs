@@ -1,38 +1,48 @@
+extern crate daily_boj;
+
+use std::collections::HashMap;
 use std::io;
 use std::io::BufRead;
-use std::collections::HashMap;
 
 fn main() {
-    fn read_str() -> String {
-        let mut buffer = String::new();
-        io::stdin().read_line(&mut buffer);
-        buffer.trim_right().to_string()
-    }
+    let stdin = io::stdin();
+    let stdin = stdin.lock();
+    let mut lines = stdin.lines().filter_map(Result::ok);
 
-    let mut first_line = read_str();
-    let mut first_line_iter = first_line.split_whitespace();
-    let pokemon_count: i32 = first_line_iter.next().expect("pokemon_count").parse().expect("String -> i32");
-    let problem_count: i32 = first_line_iter.next().expect("problem_count").parse().expect("String -> i32");
+    let (pokemon_count, problem_count) = lines
+        .next()
+        .map(|line| {
+            let mut iter = line.split_whitespace()
+                .map(|s| s.parse::<usize>().expect("String -> usize"));
+            (
+                iter.next().expect("pokemon_count"),
+                iter.next().expect("problem_count"),
+            )
+        })
+        .unwrap();
 
-    let mut pokemon_arr = Vec::<String>::with_capacity((pokemon_count + 1) as usize);
-    pokemon_arr.push(String::new());
-    let mut name_to_num_hash = HashMap::<String, i32>::new();
+    let mut name_to_num_hash = HashMap::<String, usize>::new();
+    let mut pokemon_arr = vec![];
 
-    for i in 0..pokemon_count {
-        let name = read_str();
-        pokemon_arr.push(name.clone());
-        name_to_num_hash.insert(name, i + 1);
-    }
-
-    for i in 0..problem_count {
-        let problem = read_str();
-        match problem.parse::<i32>() {
-            Ok (number) => {
-                println!("{}", pokemon_arr[number as usize]);
-            },
-            _ => {
-                println!("{}", name_to_num_hash.get(&problem).expect("No such pokemon"));
+    lines
+        .take(pokemon_count + problem_count)
+        .enumerate()
+        .for_each(|(i, line)| {
+            if i < pokemon_count {
+                name_to_num_hash.insert(line.clone(), i);
+                pokemon_arr.push(line.clone());
+            } else {
+                match line.parse::<usize>() {
+                    Ok(number) => {
+                        println!("{}", pokemon_arr[number as usize - 1]);
+                    }
+                    _ => {
+                        println!(
+                            "{}",
+                            name_to_num_hash.get(&line).expect("No such pokemon") + 1
+                        );
+                    }
+                }
             }
-        }
-    }
+        });
 }
